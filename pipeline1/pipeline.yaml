@@ -1,10 +1,10 @@
 apiVersion: tekton.dev/v1beta1 
 kind: Pipeline 
 metadata:
-  name: pl-gitpull-mavenbuild
+  name: pl-gitpull-mavenbuild1
 spec: 
   workspaces: 
-  - name: source
+  - name: ws
   params: 
   - name: git-url
     type: string
@@ -12,6 +12,10 @@ spec:
   - name: git-revision
     type: string
     description: revision to be used from repo of the code for deployment
+  - name: image
+    type: string
+    description: image to be build from the code
+    
   tasks: 
   - name: fetch-repo
     taskRef:
@@ -19,7 +23,7 @@ spec:
       kind: ClusterTask
     workspaces:
     - name: output
-      workspace: source
+      workspace: ws
     params:
     - name: url
       value: $(params.git-url)
@@ -31,10 +35,24 @@ spec:
       value: $(params.git-revision)
   - name: mvn-build
     taskRef:
-      name: maven-install
+      name: maven-install1
     runAfter:
       - fetch-repo
     workspaces:
     - name: output
-      workspace: source
+      workspace: ws
+  - name: build-image 
+    taskRef:
+      name: buildah
+      kind: ClusterTask
+    params:
+    - name: TLSVERIFY
+      value: "false"
+    - name: IMAGE
+      value: $(params.image)
+    workspaces:
+    - name: source
+      workspace: ws
+    runAfter:
+    - mvn-build      
  
