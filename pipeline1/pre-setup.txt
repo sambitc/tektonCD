@@ -1,0 +1,12 @@
+# Create secret to keep docker registry credentials
+oc create secret docker-registry docker-reg-cred \
+                    --docker-server=docker.io \
+                    --docker-username=<docker-username> \
+                    --docker-password=<docker-password> \
+                    --docker-email=<docker-email>
+					
+# Create a service account 
+oc create sa pl-sa					
+					
+oc patch serviceaccount pl-sa \
+  -p '{"secrets": [{"name": "docker-reg-cred"}]}'
