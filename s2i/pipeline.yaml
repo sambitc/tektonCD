@@ -1,0 +1,30 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: pl-hello-docker-s2i
+spec:
+  workspaces: 
+  - name: ws
+  params: 
+  - name: image
+    type: string
+    description: image to be build from the code
+  resources:
+  - name: app-git
+    type: git
+  # - name: app-image
+    # type: image
+  tasks:
+  - name: build-s2i
+    taskRef:
+      name: s2i-java-8
+      kind: ClusterTask
+    params:
+      - name: TLSVERIFY
+        value: "false"
+      - name: IMAGE
+        value: $(params.image)   
+    workspaces:
+      - name: source
+        workspace: ws        
+
