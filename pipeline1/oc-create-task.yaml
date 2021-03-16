@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: oc-create
+spec:
+  steps:
+    - name: oc-create
+      image: quay.io/openshift/origin-cli:latest
+      workingDir: /workspace/output
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          oc create -f /k8/deploy.yaml
+          oc create -f /k8/service.yaml
+          echo -----------------------------------
+  workspaces:
+    - name: output          

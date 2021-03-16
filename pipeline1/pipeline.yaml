@@ -54,5 +54,14 @@ spec:
     - name: source
       workspace: ws
     runAfter:
-    - mvn-build      
+      - mvn-build      
+  - name: oc-create
+    taskRef:
+      name: oc-create
+    workspaces:
+    - name: output
+      workspace: ws
+    runAfter:
+      - build-image
+    
  
