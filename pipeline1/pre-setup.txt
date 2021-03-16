@@ -10,3 +10,7 @@ oc create sa pl-sa
 					
 oc patch serviceaccount pl-sa \
   -p '{"secrets": [{"name": "docker-reg-cred"}]}'
+  
+oc create -f role.yaml
+
+oc create -f role-binding.yaml
